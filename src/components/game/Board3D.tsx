@@ -132,8 +132,8 @@ function Node({
         <meshStandardMaterial color="#a9702f" roughness={0.6} />
       </mesh>
       <mesh ref={ring} rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.006, 0]}>
-        <ringGeometry args={[0.16, 0.26, 28]} />
-        <meshBasicMaterial color="#9cf7b6" transparent opacity={0.9} side={THREE.DoubleSide} />
+        <ringGeometry args={[0.19, 0.25, 28]} />
+        <meshBasicMaterial color="#9cf7b6" transparent opacity={0.7} side={THREE.DoubleSide} />
       </mesh>
     </group>
   );
@@ -179,8 +179,8 @@ function CameraRig({ signal }: { signal: number }) {
     const vFov = ((camera.fov ?? 42) * Math.PI) / 180;
     let dist = boardRadius / Math.tan(vFov / 2);
     if (aspect < 1) dist /= Math.max(0.45, aspect);
-    dist = Math.min(Math.max(dist * 0.62, 7), 15);
-    camera.position.set(0, dist * 0.78, dist * 0.66);
+    dist = Math.min(Math.max(dist * 0.95, 8), 22);
+    camera.position.set(0, dist * 0.8, dist * 0.62);
     camera.updateProjectionMatrix();
     if (controls) {
       controls.target.set(0, 0, 0);
@@ -269,7 +269,7 @@ function Scene({
         minPolarAngle={0.35}
         maxPolarAngle={1.05}
         minDistance={6}
-        maxDistance={18}
+        maxDistance={24}
         autoRotate={!!autoRotate}
         autoRotateSpeed={0.9}
         makeDefault
