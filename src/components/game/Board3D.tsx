@@ -25,7 +25,7 @@ function pos3(node: number, y = BOARD_TOP): [number, number, number] {
 }
 
 function BoardBase({ colors }: { colors: BoardColors }) {
-  const half = UNIT * 2 + 0.75;
+  const half = UNIT * 2 + 0.8;
   return (
     <group>
       {/* wooden frame */}
@@ -33,14 +33,14 @@ function BoardBase({ colors }: { colors: BoardColors }) {
         <boxGeometry args={[half * 2, 0.22, half * 2]} />
         <meshStandardMaterial color="#8a5a2b" roughness={0.65} />
       </mesh>
-      {/* decorative border ring */}
-      <mesh position={[0, 0.14, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <ringGeometry args={[UNIT * 2 + 0.28, half - 0.05, 4, 1]} />
-        <meshStandardMaterial color="#e8dcbd" roughness={0.8} side={THREE.DoubleSide} />
+      {/* cream paper border */}
+      <mesh position={[0, 0.132, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[half * 2 - 0.22, half * 2 - 0.22]} />
+        <meshStandardMaterial color="#efe6cd" roughness={0.9} />
       </mesh>
       {/* felt playfield */}
       <mesh receiveShadow position={[0, 0.14, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[UNIT * 4 + 0.5, UNIT * 4 + 0.5]} />
+        <planeGeometry args={[UNIT * 4 + 0.55, UNIT * 4 + 0.55]} />
         <meshStandardMaterial color={colors.felt} roughness={0.95} />
       </mesh>
       <BoardLines />
@@ -78,23 +78,23 @@ function Decorations() {
   const items = useMemo(() => {
     const out: { x: number; z: number; c: string; r: number }[] = [];
     const palette = ["#e14b64", "#3d7de0", "#f0a92e", "#48b972", "#8b58d6"];
-    const edge = UNIT * 2 + 0.5;
-    for (let i = 0; i < 20; i++) {
-      const t = (i / 20) * Math.PI * 2;
-      out.push({
-        x: Math.cos(t) * edge * (Math.abs(Math.cos(t)) > 0.7 ? 1 : 1.05),
-        z: Math.sin(t) * edge * 1.02,
-        c: palette[i % palette.length]!,
-        r: t,
-      });
+    const band = UNIT * 2 + 0.48;
+    const count = 7;
+    let k = 0;
+    for (let i = 0; i < count; i++) {
+      const t = -band + 0.25 + (i / (count - 1)) * (band * 2 - 0.5);
+      out.push({ x: t, z: -band, c: palette[k++ % palette.length]!, r: 0 });
+      out.push({ x: t, z: band, c: palette[k++ % palette.length]!, r: 0 });
+      out.push({ x: -band, z: t, c: palette[k++ % palette.length]!, r: Math.PI / 2 });
+      out.push({ x: band, z: t, c: palette[k++ % palette.length]!, r: Math.PI / 2 });
     }
     return out;
   }, []);
   return (
     <group>
       {items.map((d, i) => (
-        <mesh key={i} position={[d.x, 0.145, d.z]} rotation={[-Math.PI / 2, 0, d.r]}>
-          <planeGeometry args={[0.32, 0.16]} />
+        <mesh key={i} position={[d.x, 0.136, d.z]} rotation={[-Math.PI / 2, 0, d.r]}>
+          <planeGeometry args={[0.26, 0.14]} />
           <meshBasicMaterial color={d.c} transparent opacity={0.85} />
         </mesh>
       ))}
