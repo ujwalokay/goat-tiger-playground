@@ -182,6 +182,7 @@ function CameraRig({ signal }: { signal: number }) {
     dist = Math.min(Math.max(dist * 0.95, 8), 22);
     camera.position.set(0, dist * 0.8, dist * 0.62);
     camera.updateProjectionMatrix();
+    (window as unknown as Record<string, unknown>)['__camdbg'] = { dist, w: size.width, h: size.height };
     if (controls) {
       controls.target.set(0, 0, 0);
       controls.update();
