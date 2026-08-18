@@ -33,7 +33,7 @@ function buildAdjacency(): number[][] {
         const nr = r + dr;
         const nc = c + dc;
         if (nr < 0 || nc < 0 || nr >= SIZE || nc >= SIZE) continue;
-        adj[i].push(nr * SIZE + nc);
+        adj[i]!.push(nr * SIZE + nc);
       }
     }
   }
@@ -47,15 +47,15 @@ export type Jump = { over: number; to: number };
 function buildJumps(): Jump[][] {
   const jumps: Jump[][] = Array.from({ length: NODES }, () => []);
   for (let i = 0; i < NODES; i++) {
-    for (const mid of ADJ[i]) {
+    for (const mid of ADJ[i]!) {
       const dr = rowOf(mid) - rowOf(i);
       const dc = colOf(mid) - colOf(i);
       const tr = rowOf(mid) + dr;
       const tc = colOf(mid) + dc;
       if (tr < 0 || tc < 0 || tr >= SIZE || tc >= SIZE) continue;
       const to = tr * SIZE + tc;
-      if (!ADJ[mid].includes(to)) continue;
-      jumps[i].push({ over: mid, to });
+      if (!ADJ[mid]!.includes(to)) continue;
+      jumps[i]!.push({ over: mid, to });
     }
   }
   return jumps;
@@ -67,7 +67,7 @@ export const JUMPS = buildJumps();
 export const EDGES: [number, number][] = (() => {
   const out: [number, number][] = [];
   for (let i = 0; i < NODES; i++) {
-    for (const j of ADJ[i]) if (j > i) out.push([i, j]);
+    for (const j of ADJ[i]!) if (j > i) out.push([i, j]);
   }
   return out;
 })();
@@ -105,8 +105,8 @@ export function tigerMoves(s: GameState): Move[] {
   const out: Move[] = [];
   for (let i = 0; i < NODES; i++) {
     if (s.board[i] !== "tiger") continue;
-    for (const j of ADJ[i]) if (!s.board[j]) out.push({ kind: "move", from: i, to: j });
-    for (const { over, to } of JUMPS[i]) {
+    for (const j of ADJ[i]!) if (!s.board[j]) out.push({ kind: "move", from: i, to: j });
+    for (const { over, to } of JUMPS[i]!) {
       if (s.board[over] === "goat" && !s.board[to])
         out.push({ kind: "move", from: i, to, capture: over });
     }
@@ -122,7 +122,7 @@ export function goatMoves(s: GameState): Move[] {
   }
   for (let i = 0; i < NODES; i++) {
     if (s.board[i] !== "goat") continue;
-    for (const j of ADJ[i]) if (!s.board[j]) out.push({ kind: "move", from: i, to: j });
+    for (const j of ADJ[i]!) if (!s.board[j]) out.push({ kind: "move", from: i, to: j });
   }
   return out;
 }
@@ -146,7 +146,7 @@ export function applyMove(s: GameState, m: Move): GameState {
     board[m.to] = "goat";
     goatsPlaced += 1;
   } else {
-    board[m.to] = board[m.from];
+    board[m.to] = board[m.from]!;
     board[m.from] = null;
     if (m.capture != null) {
       board[m.capture] = null;
