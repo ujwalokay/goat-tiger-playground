@@ -170,6 +170,7 @@ function CaptureBurst({ node, stamp }: { node: number; stamp: number }) {
 }
 
 function CameraRig({ signal }: { signal: number }) {
+  // Fits the board into the viewport on mount, resize, and reset.
   const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera;
   const size = useThree((s) => s.size);
   const controls = useThree((s) => s.controls) as { target: THREE.Vector3; update: () => void } | null;
