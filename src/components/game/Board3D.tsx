@@ -1,5 +1,5 @@
 import { OrbitControls, ContactShadows } from "@react-three/drei";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 
@@ -169,6 +169,20 @@ function CaptureBurst({ node, stamp }: { node: number; stamp: number }) {
   );
 }
 
+function CameraReset({ signal }: { signal: number }) {
+  const camera = useThree((s) => s.camera);
+  const controls = useThree((s) => s.controls) as { target: THREE.Vector3; update: () => void } | null;
+  useEffect(() => {
+    if (signal === 0) return;
+    camera.position.set(0, 7.6, 7.2);
+    if (controls) {
+      controls.target.set(0, 0, 0);
+      controls.update();
+    }
+  }, [signal, camera, controls]);
+  return null;
+}
+
 function Scene({
   pieces,
   colors,
@@ -177,6 +191,7 @@ function Scene({
   onNode,
   burst,
   autoRotate,
+  resetSignal,
 }: {
   pieces: PieceView[];
   colors: BoardColors;
@@ -185,6 +200,7 @@ function Scene({
   onNode?: (i: number) => void;
   burst?: { node: number; stamp: number } | null;
   autoRotate?: boolean;
+  resetSignal: number;
 }) {
   return (
     <>
@@ -251,6 +267,7 @@ function Scene({
         autoRotateSpeed={0.9}
         makeDefault
       />
+      <CameraReset signal={resetSignal} />
     </>
   );
 }
@@ -263,6 +280,7 @@ export function Board3D(props: {
   onNode?: (i: number) => void;
   burst?: { node: number; stamp: number } | null;
   autoRotate?: boolean;
+  resetSignal?: number;
   className?: string;
 }) {
   const {
@@ -273,6 +291,7 @@ export function Board3D(props: {
     onNode,
     burst = null,
     autoRotate,
+    resetSignal = 0,
     className,
   } = props;
 
@@ -292,6 +311,7 @@ export function Board3D(props: {
           highlights={highlights}
           selected={selected}
           burst={burst}
+          resetSignal={resetSignal}
           {...(autoRotate ? { autoRotate: true } : {})}
           {...(onNode ? { onNode } : {})}
         />
