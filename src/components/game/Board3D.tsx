@@ -169,17 +169,24 @@ function CaptureBurst({ node, stamp }: { node: number; stamp: number }) {
   );
 }
 
-function CameraReset({ signal }: { signal: number }) {
-  const camera = useThree((s) => s.camera);
+function CameraRig({ signal }: { signal: number }) {
+  const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera;
+  const size = useThree((s) => s.size);
   const controls = useThree((s) => s.controls) as { target: THREE.Vector3; update: () => void } | null;
   useEffect(() => {
-    if (signal === 0) return;
-    camera.position.set(0, 7.6, 7.2);
+    const boardRadius = UNIT * 2 + 1.5;
+    const aspect = size.width / size.height;
+    const vFov = ((camera.fov ?? 42) * Math.PI) / 180;
+    let dist = boardRadius / Math.tan(vFov / 2);
+    if (aspect < 1) dist /= Math.max(0.45, aspect);
+    dist = Math.min(Math.max(dist * 0.62, 7), 15);
+    camera.position.set(0, dist * 0.78, dist * 0.66);
+    camera.updateProjectionMatrix();
     if (controls) {
       controls.target.set(0, 0, 0);
       controls.update();
     }
-  }, [signal, camera, controls]);
+  }, [signal, camera, controls, size.width, size.height]);
   return null;
 }
 
@@ -262,12 +269,12 @@ function Scene({
         minPolarAngle={0.35}
         maxPolarAngle={1.05}
         minDistance={6}
-        maxDistance={13}
+        maxDistance={18}
         autoRotate={!!autoRotate}
         autoRotateSpeed={0.9}
         makeDefault
       />
-      <CameraReset signal={resetSignal} />
+      <CameraRig signal={resetSignal} />
     </>
   );
 }
