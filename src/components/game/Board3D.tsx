@@ -180,10 +180,9 @@ function CameraRig({ signal }: { signal: number }) {
     const vFov = ((camera.fov ?? 42) * Math.PI) / 180;
     let dist = boardRadius / Math.tan(vFov / 2);
     if (aspect < 1) dist /= Math.max(0.45, aspect);
-    dist = Math.min(Math.max(dist * 0.95, 8), 22);
+    dist = Math.min(Math.max(dist * 0.72, 8), 20);
     camera.position.set(0, dist * 0.8, dist * 0.62);
     camera.updateProjectionMatrix();
-    (window as unknown as Record<string, unknown>)['__camdbg'] = { dist, w: size.width, h: size.height };
     if (controls) {
       controls.target.set(0, 0, 0);
       controls.update();
