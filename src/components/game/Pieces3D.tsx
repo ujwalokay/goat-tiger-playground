@@ -39,7 +39,7 @@ export function GoatPiece({ position, color, selected, glow, onClick, seed = 0 }
   useIdle(group, position, seed, selected);
 
   return (
-    <group ref={group} position={position} onClick={onClick ? () => onClick() : undefined}>
+    <group ref={group} position={position} {...(onClick ? { onClick: () => onClick() } : {})}>
       {/* body */}
       <mesh castShadow position={[0, 0.16, 0]}>
         <capsuleGeometry args={[0.16, 0.16, 6, 16]} />
@@ -91,7 +91,7 @@ export function TigerPiece({ position, color, selected, glow, onClick, seed = 0 
   useIdle(group, position, seed, selected);
 
   return (
-    <group ref={group} position={position} onClick={onClick ? () => onClick() : undefined}>
+    <group ref={group} position={position} {...(onClick ? { onClick: () => onClick() } : {})}>
       <mesh castShadow position={[0, 0.18, 0]}>
         <capsuleGeometry args={[0.18, 0.18, 6, 16]} />
         <meshStandardMaterial color={color} roughness={0.32} />
